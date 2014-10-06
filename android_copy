@@ -1,0 +1,25 @@
+#!/bin/bash
+
+set -e
+
+args=()
+user=root
+for arg in "${@}" ; do
+  if [[ "${arg}" == --shell ]] ; then
+    user=shell
+  else
+    args+=("${arg}")
+  fi
+done
+
+remote=${user}@${android_ip}:
+path1=$(echo ${args[0]} | sed "s/android:/${remote}/g")
+path2=$(echo ${args[1]} | sed "s/android:/${remote}/g")
+
+if [ "x${path1}" = x -o "x${path2}" = x ] ; then
+  echo "usage: android_copy source destination"
+  exit 1
+fi
+
+scp -r ${path1} ${path2}
+
