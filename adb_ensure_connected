@@ -55,7 +55,7 @@ function try_connect_wifi {
     done
     adb wait-for-any-${wait_for}
     if ! pgrep android_keep_wifi_awake >/dev/null; then
-      andrid_keep_wifi_awake
+      android_keep_wifi_awake
     fi
     return 0
   fi
