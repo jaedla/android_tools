@@ -1,0 +1,16 @@
+#!/bin/bash
+
+set -e
+
+user=root
+if [ x${1} = x--shell ] ; then
+  user=shell
+  shift
+fi
+
+if ! pgrep android_keep_wifi_awake >/dev/null; then
+  android_keep_wifi_awake
+fi
+
+ssh ${user}@${android_ip}
+

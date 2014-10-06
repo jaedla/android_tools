@@ -1,0 +1,8 @@
+#!/bin/bash
+
+len=${1}
+if [ x${len} = x ] ; then
+  len=14
+fi
+
+dd if=/dev/urandom bs=1 count=100 2>/dev/null | base64 | tr -d / | tr -d + | head -c ${len} ; echo

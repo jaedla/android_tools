@@ -1,0 +1,4 @@
+#!/bin/bash
+
+echo "${android_tmp}/$(randid 20)"
+

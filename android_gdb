@@ -1,0 +1,21 @@
+#!/bin/bash
+
+set -e
+
+if [ x${1} = x ] ; then
+  echo "usage: android_gdb binary"
+  exit 1
+fi
+program=${1}
+
+# sigh, couldn't get gdb script to reference envvars
+tmp_script=$(hometemp)
+cp ${bin}/android_gdb_commands ${tmp_script}
+escaped_path=$(echo ${android_source} | sed 's/\//\\\//g')
+sed -i "s/android_source/${escaped_path}/g" ${tmp_script}
+sed -i "s/android_ip/${android_ip}/g" ${tmp_script}
+
+gdb-multiarch -x ${tmp_script} ${android_source}/out/target/product/hammerhead/obj/EXECUTABLES/${program}_intermediates/LINKED/${program}
+
+rm ${tmp_script}
+

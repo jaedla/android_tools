@@ -1,0 +1,5 @@
+#!/bin/bash
+
+export android_root_cmd=true
+android_cmd "${@}"
+

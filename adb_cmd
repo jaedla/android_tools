@@ -1,0 +1,30 @@
+#!/bin/bash
+
+set -e
+
+su_cmd=
+if [ x${android_root_cmd} != x ] ; then
+  su_cmd="su -c"
+fi
+
+adb_ensure_connected
+local_cmd_file=$(hometemp)
+local_status_file=$(hometemp)
+cmd_file=$(android_tmp)
+status_file=$(android_tmp)
+
+cat << EOF > ${local_cmd_file}
+#!/system/bin/sh
+${@}
+echo \$? >${status_file}
+EOF
+
+adb push ${local_cmd_file} ${cmd_file} >/dev/null 2>&1
+adb shell "chmod 755 ${cmd_file} && touch ${status_file} && ${su_cmd} ${cmd_file}"
+adb pull ${status_file} ${local_status_file} >/dev/null 2>&1
+status=$(cat ${local_status_file})
+adb shell "rm ${cmd_file} ${status_file}"
+rm ${local_cmd_file} ${local_status_file}
+
+exit ${status}
+

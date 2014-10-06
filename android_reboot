@@ -1,0 +1,4 @@
+#!/bin/bash
+
+android_cmd reboot
+

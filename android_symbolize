@@ -1,0 +1,4 @@
+#!/bin/bash
+
+sed 's/\/data\/home\/root\/soccervision\/soccervision/\/home\/asd\/android\/system\/out\/target\/product\/hammerhead\/obj\/EXECUTABLES\/soccervision_intermediates\/LINKED\/soccervision/g' | sed 's/(\/system/(\/home\/asd\/android\/system\/out\/target\/product\/hammerhead\/symbols\/system/g' | symbolize
+

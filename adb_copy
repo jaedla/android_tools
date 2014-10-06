@@ -1,0 +1,42 @@
+#!/bin/bash
+
+set -e
+
+adb_ensure_connected
+
+owner_options=
+args=()
+for arg in "${@}" ; do
+  if [[ "${arg}" == --user=* ]] ; then
+    owner=$(echo "${arg}" | cut -d= -f2-)
+    owner_options="--owner=${owner} --group=${owner}"
+  else
+    args+=("${arg}")
+  fi
+done
+
+local_path="${args[0]}"
+remote_path="${args[1]}"
+
+if [ "x${remote_path}" = x -o "x${remote_path}" = x ] ; then
+  echo "usage: adb_copy source destination"
+  exit 1
+fi
+
+if [ ! -f "${local_path}" -a ! -d "${local_path}" ] ; then
+  echo ""${local_path}" doesn't exist"
+  exit 1
+fi
+src=$(readlink -f "${local_path}")
+src_dirname=$(dirname ${src})
+src_basename=$(basename ${src})
+dst="${remote_path}"
+tmpdir=$(hometemp -d)
+cd ${tmpdir}
+tar -czf package.tar.gz ${owner_options} -C ${src_dirname} ${src_basename} >/dev/null
+adb push package.tar.gz ${android_tmp}/package.tar.gz
+adb shell "cd ${dst} && tar -xzf ${android_tmp}/package.tar.gz"
+adb shell rm ${android_tmp}/package.tar.gz
+cd - >/dev/null
+rm -r ${tmpdir}
+

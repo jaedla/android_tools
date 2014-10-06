@@ -1,0 +1,12 @@
+#!/bin/bash
+
+set -e
+
+user=root
+if [ "x${1}" = x--shell ] ; then
+  user=shell
+  shift
+fi
+
+ssh ${user}@${android_ip} "${@}"
+

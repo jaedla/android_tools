@@ -1,0 +1,17 @@
+#!/bin/bash
+
+if [ x${1} = x-D ] ; then
+  ping -i 0.1 ${android_ip} >/dev/null 2>&1
+else
+  already_running=false
+  for i in $(pgrep android_keep_wifi_awake) ; do
+    if cat /proc/${i}/cmdline | grep -q -- -D ; then
+      already_running=true
+      break
+    fi
+  done
+  if [ ${already_running} = false ] ; then
+    android_keep_wifi_awake -D &
+  fi
+fi
+

@@ -1,0 +1,29 @@
+#!/bin/bash
+
+set -e
+
+package=
+function find_newest_package {
+  package=$(ls -t ${android_build}/cm_hammerhead-ota-*.zip | head -n 1)
+  if [ x${package} = x ] ; then
+    echo "No hammerhead packages"
+    exit 1
+  fi
+  echo "Installing ${package}"
+  return 0
+}
+
+function reboot_recovery_sideload {
+  adb_root_cmd mkdir -p /cache/recovery
+  adb_root_cmd rm -f /cache/recovery/command
+  adb_root_cmd "echo --sideload >/cache/recovery/command"
+  adb reboot recovery
+}
+
+find_newest_package
+adb_ensure_connected --device
+reboot_recovery_sideload
+adb_ensure_connected --sideload
+adb sideload ${package}
+adb_ensure_connected --device
+

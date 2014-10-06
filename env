@@ -1,0 +1,4 @@
+android_ip=192.168.43.1
+android_tmp=/data/local/shell/tmp
+android_source=${HOME}/android/system
+
